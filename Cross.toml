@@ -1,0 +1,3 @@
+[target.x86_64-unknown-linux-gnu.dockerfile]
+file = "./Dockerfile"
+build-args = { CROSS_OS = "linux-x86_64", CROSS_TRIPLE = "x86_64-linux-gnu" }

@@ -1,7 +1,9 @@
 #!/bin/bash -ex
 
-cargo build --release
-mkdir -p /tmp/devcaders-zipper/devcaders
-cp -rv target/release/devcaders assets /tmp/devcaders-zipper/devcaders
+cross build --target x86_64-unknown-linux-gnu --release
+rm -Ir /tmp/devcaders-zipper /tmp/devcaders-zipper.zip || true
+mkdir -p /tmp/devcaders-zipper/publish
+cp -rv target/x86_64-unknown-linux-gnu/release/devcaders assets /tmp/devcaders-zipper/publish
+cp assets/banner.png assets/icon.png /tmp/devcaders-zipper
 cd /tmp/devcaders-zipper
 zip -r /tmp/devcaders-zipper.zip *
