@@ -324,7 +324,7 @@ fn setup(
 
 fn move_paddle(
   gamepads: Res<Gamepads>,
-  _button_inputs: Res<Input<GamepadButton>>,
+  button_inputs: Res<Input<GamepadButton>>,
   _button_axes: Res<Axis<GamepadButton>>,
   axes: Res<Axis<GamepadAxis>>,
   mut query: Query<&mut Transform, With<Paddle>>,
@@ -333,6 +333,10 @@ fn move_paddle(
   let mut direction = 0.0;
 
   for gamepad in gamepads.iter() {
+    // lol
+    if button_inputs.pressed(GamepadButton::new(gamepad, GamepadButtonType::Start)) {
+      std::process::exit(0);
+    }
     let x_dir = axes
       .get(GamepadAxis::new(gamepad, GamepadAxisType::LeftStickX))
       .unwrap();
