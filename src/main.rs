@@ -6,6 +6,7 @@ use bevy::{
   sprite::MaterialMesh2dBundle,
   window::WindowMode,
 };
+use devcaders::{Buttons, DevcadeControls, Player};
 
 // Defines the amount of time that should elapse between each physics step.
 const TIME_STEP: f32 = 1.0 / 60.0;
@@ -322,42 +323,30 @@ fn setup(
   }
 }
 
-fn move_paddle(
-  gamepads: Res<Gamepads>,
-  button_inputs: Res<Input<GamepadButton>>,
-  _button_axes: Res<Axis<GamepadButton>>,
-  axes: Res<Axis<GamepadAxis>>,
-  mut query: Query<&mut Transform, With<Paddle>>,
-) {
+fn move_paddle(button_inputs: DevcadeControls, mut query: Query<&mut Transform, With<Paddle>>) {
   let mut paddle_transform = query.single_mut();
   let mut direction = 0.0;
 
-  for gamepad in gamepads.iter() {
-    // lol
-    if button_inputs.pressed(GamepadButton::new(gamepad, GamepadButtonType::Start)) {
-      std::process::exit(0);
-    }
-    let x_dir = axes
-      .get(GamepadAxis::new(gamepad, GamepadAxisType::LeftStickX))
-      .unwrap();
-    if x_dir < -0.01 {
-      direction -= 1.0;
-    }
-
-    if x_dir > 0.01 {
-      direction += 1.0;
-    }
-
-    // Calculate the new horizontal paddle position based on player input
-    let new_paddle_position = paddle_transform.translation.x + direction * PADDLE_SPEED * TIME_STEP;
-
-    // Update the paddle position,
-    // making sure it doesn't cause the paddle to leave the arena
-    let left_bound = LEFT_WALL + WALL_THICKNESS / 2.0 + PADDLE_SIZE.x / 2.0 + PADDLE_PADDING;
-    let right_bound = RIGHT_WALL - WALL_THICKNESS / 2.0 - PADDLE_SIZE.x / 2.0 - PADDLE_PADDING;
-
-    paddle_transform.translation.x = new_paddle_position.clamp(left_bound, right_bound);
+  if button_inputs.any_player_pressed(Buttons::Menu) {
+    std::process::exit(0);
   }
+  if button_inputs.pressed(Buttons::StickLeft, Player::P1) {
+    direction -= 1.0;
+  }
+
+  if button_inputs.pressed(Buttons::StickRight, Player::P1) {
+    direction += 1.0;
+  }
+
+  // Calculate the new horizontal paddle position based on player input
+  let new_paddle_position = paddle_transform.translation.x + direction * PADDLE_SPEED * TIME_STEP;
+
+  // Update the paddle position,
+  // making sure it doesn't cause the paddle to leave the arena
+  let left_bound = LEFT_WALL + WALL_THICKNESS / 2.0 + PADDLE_SIZE.x / 2.0 + PADDLE_PADDING;
+  let right_bound = RIGHT_WALL - WALL_THICKNESS / 2.0 - PADDLE_SIZE.x / 2.0 - PADDLE_PADDING;
+
+  paddle_transform.translation.x = new_paddle_position.clamp(left_bound, right_bound);
 }
 
 fn apply_velocity(mut query: Query<(&mut Transform, &Velocity)>) {
