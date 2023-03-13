@@ -6,7 +6,7 @@ use bevy::{
   sprite::MaterialMesh2dBundle,
   window::WindowMode,
 };
-use devcaders::{Buttons, DevcadeControls, Player};
+use devcaders::{Button, DevcadeControls, Player};
 
 // Defines the amount of time that should elapse between each physics step.
 const TIME_STEP: f32 = 1.0 / 60.0;
@@ -327,14 +327,16 @@ fn move_paddle(button_inputs: DevcadeControls, mut query: Query<&mut Transform, 
   let mut paddle_transform = query.single_mut();
   let mut direction = 0.0;
 
-  if button_inputs.any_player_pressed(Buttons::Menu) {
+  if button_inputs.pressed(Player::P1, Button::Menu)
+    || button_inputs.pressed(Player::P2, Button::Menu)
+  {
     std::process::exit(0);
   }
-  if button_inputs.pressed(Buttons::StickLeft, Player::P1) {
+  if button_inputs.pressed(Player::P1, Button::StickLeft) {
     direction -= 1.0;
   }
 
-  if button_inputs.pressed(Buttons::StickRight, Player::P1) {
+  if button_inputs.pressed(Player::P1, Button::StickRight) {
     direction += 1.0;
   }
 

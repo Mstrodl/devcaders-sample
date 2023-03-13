@@ -7,4 +7,4 @@ edition = "2021"
 
 [dependencies]
 bevy = "0.10.0"
-devcaders = "0.1.0"
+devcaders = "0.2.0"
